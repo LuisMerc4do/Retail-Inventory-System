@@ -1,20 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Retail_Inventory_System.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Retail_Inventory_System.Data
+public class AppDbContext : DbContext
 {
-    public class AppDbContext : DbContext
-    {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("server=localhost;Database=RetailManagement;Trusted_Connection=True;MultipleActiveResultSets=True;");
-        }
+    public DbSet<Product> Products { get; set; }
+    // Add DbSet properties for other entities as needed
 
-        public DbSet<Product> Product { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        string connectionString = "Server=LUISMERCADO\\SQLEXPRESS;Database=CodingTest;Trusted_Connection=True;";
+        optionsBuilder.UseSqlServer(connectionString);
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Configure your model here (e.g., entity relationships, constraints)
     }
 }
