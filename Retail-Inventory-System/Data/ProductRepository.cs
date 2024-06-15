@@ -1,52 +1,47 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Retail_Inventory_System.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Retail_Inventory_System.Data
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly DbContext _context;
+        private readonly RetailContext _context;
 
-        public ProductRepository(DbContext context)
+        public ProductRepository(RetailContext context)
         {
             _context = context;
         }
 
-        public void Add(Product product)
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            _context.Set<Product>().Add(product);
-            _context.SaveChanges();
+            return await _context.Products.ToListAsync();
         }
 
-        public void Update(Product product)
+        public async Task<Product> GetProductByIdAsync(int id)
         {
-            _context.Set<Product>().Update(product);
-            _context.SaveChanges();
+            return await _context.Products.FindAsync(id);
         }
 
-        public void Delete(int id)
+        public async Task AddProductAsync(Product product)
         {
-            var product = GetById(id);
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateProductAsync(Product product)
+        {
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteProductAsync(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                _context.Set<Product>().Remove(product);
-                _context.SaveChanges();
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
             }
-        }
-
-        public Product GetById(int id)
-        {
-            return _context.Set<Product>().Find(id);
-        }
-
-        public IEnumerable<Product> GetAll()
-        {
-            return _context.Set<Product>().ToList();
         }
     }
 

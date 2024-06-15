@@ -1,10 +1,5 @@
 ﻿using Retail_Inventory_System.Data;
 using Retail_Inventory_System.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Retail_Inventory_System.Service
 {
@@ -17,34 +12,29 @@ namespace Retail_Inventory_System.Service
             _productRepository = productRepository;
         }
 
-        public void AddProduct(Product product)
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            // Perform validation or additional logic here
-            _productRepository.Add(product);
+            return await _productRepository.GetAllProductsAsync();
         }
 
-        public void UpdateProduct(Product product)
+        public async Task<Product> GetProductByIdAsync(int id)
         {
-            // Perform validation or additional logic here
-            _productRepository.Update(product);
+            return await _productRepository.GetProductByIdAsync(id);
         }
 
-        public void DeleteProduct(int id)
+        public async Task AddProductAsync(Product product)
         {
-            // Perform validation or additional logic here
-            _productRepository.Delete(id);
+            await _productRepository.AddProductAsync(product);
         }
 
-        public Product GetProductById(int id)
+        public async Task UpdateProductAsync(Product product)
         {
-            // Additional business logic if needed
-            return _productRepository.GetById(id);
+            await _productRepository.UpdateProductAsync(product);
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        public async Task DeleteProductAsync(int id)
         {
-            // Additional business logic if needed
-            return _productRepository.GetAll();
+            await _productRepository.DeleteProductAsync(id);
         }
     }
 
