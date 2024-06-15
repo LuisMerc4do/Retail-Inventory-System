@@ -1,4 +1,5 @@
 RETAIL INVENTORY SYSTEM
+
 -- Project created to practice my coding skills and learning entity Framework -- 
 Level of help from outsources = Low
 
