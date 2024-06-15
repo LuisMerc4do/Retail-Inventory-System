@@ -1,4 +1,6 @@
 RETAIL INVENTORY SYSTEM
+-- Project created to practice my coding skills and learning entity Framework -- 
+Level of help from outsources = Low
 
 This project implements a simple Retail Inventory Management System using C# with .NET Framework. The system allows users to manage products including adding, updating, deleting, and viewing products. It follows the repository pattern for data access and utilizes Entity Framework for database operations.
 
