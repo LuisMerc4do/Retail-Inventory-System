@@ -8,7 +8,7 @@ public class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        string connectionString = "Server=LUISMERCADO\\SQLEXPRESS;Database=CodingTest;Trusted_Connection=True;";
+        string connectionString = "Server=LUISMERCADO\\SQLEXPRESS;Database=CodingTest;Trusted_Connection=True;TrustServerCertificate=True;";
         optionsBuilder.UseSqlServer(connectionString);
     }
 
