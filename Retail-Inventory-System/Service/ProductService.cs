@@ -31,7 +31,10 @@ namespace Retail_Inventory_System.Service
         {
             await _productRepository.UpdateProductAsync(product);
         }
-
+        public async Task<bool> ProductExistsAsync(string productName)
+        {
+            return await _productRepository.ProductExistsAsync(productName);
+        }
         public async Task DeleteProductAsync(int id)
         {
             await _productRepository.DeleteProductAsync(id);

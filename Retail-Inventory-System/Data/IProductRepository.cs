@@ -9,5 +9,6 @@ namespace Retail_Inventory_System.Data
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(int id);
+        Task<bool> ProductExistsAsync(string productName);
     }
 }

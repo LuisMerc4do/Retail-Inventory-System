@@ -43,6 +43,10 @@ namespace Retail_Inventory_System.Data
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<bool> ProductExistsAsync(string productName)
+        {
+            return await _context.Products.AnyAsync(p => p.Name == productName);
+        }
     }
 
 }

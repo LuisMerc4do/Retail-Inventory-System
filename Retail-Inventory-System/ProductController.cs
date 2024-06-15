@@ -1,4 +1,5 @@
-﻿using Retail_Inventory_System.Models;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using Retail_Inventory_System.Models;
 using Retail_Inventory_System.Service;
 
 namespace Retail_Inventory_System
@@ -45,8 +46,13 @@ namespace Retail_Inventory_System
                         await DeleteProductUI();
                         break;
                     case "3":
+                        await UpdateProductUI();
                         break;
                     case "4":
+                        await ViewAllProducts();
+                        break;
+                    case "5":
+                        await ViewProductByID();
                         break;
                     case "0":
                         Console.WriteLine("Exiting...");
@@ -152,7 +158,11 @@ namespace Retail_Inventory_System
                         Console.WriteLine("Invalid stock. Please enter a valid non-negative integer.");
                     }
                 }
-
+                if (await _productService.ProductExistsAsync(name))
+                {
+                    Console.WriteLine("A product with this name already exists.");
+                    return;
+                }
                 Product newProduct = new Product
                 {
                     Name = name,
@@ -238,16 +248,136 @@ namespace Retail_Inventory_System
                         Console.WriteLine("Invalid ID Syntax. Please enter a valid positive number.");
                     }
                 }
+                var productToUpdate = await _productService.GetProductByIdAsync(id);
+                if (productToUpdate == null)
+                {
+                    Console.WriteLine($"Product with ID{id} not found.");
+                    return;
+                }
+                // Name validation
+                string updatedName;
+                Console.Write("Enter new product name or press enter to keep the current name: ");
+                updatedName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(updatedName))
+                {
+                    productToUpdate.Name = updatedName;
+                }
+                else
+                {
+                    productToUpdate.Name = productToUpdate.Name;
+                }
+
+                // Description validation
+                string updatedDescription;
+                Console.Write("Enter new product description or press enter to keep the current Description: ");
+                updatedDescription = Console.ReadLine();
+                if (!string.IsNullOrEmpty(updatedDescription))
+                {
+                    productToUpdate.Description = updatedDescription;
+                }
+                else
+                {
+                    productToUpdate.Description = productToUpdate.Description;
+                }
+
+                // Category validation
+                string Updatedcategory;
+                Console.Write("Enter new product category or press enter to keep the current Category: ");
+                Updatedcategory = Console.ReadLine();
+                if (!string.IsNullOrEmpty(Updatedcategory))
+                {
+                    productToUpdate.Category = Updatedcategory;
+                }
+                else
+                {
+                    productToUpdate.Category = productToUpdate.Category;
+                }
+
+                // Price validation
+                decimal updatedPrice;
+                Console.Write("Enter new product price or press enter to keep the current Price: ");
+                if (!decimal.TryParse(Console.ReadLine(), out updatedPrice) && updatedPrice > 0)
+                {
+                    productToUpdate.Price = productToUpdate.Price;
+                }
+                else
+                {
+                    productToUpdate.Price = updatedPrice;
+                }
+
+                // Stock validation
+                int updatedStock;
+                Console.Write("Enter new product stock or press enter to keep the current Stock: ");
+                if (!int.TryParse(Console.ReadLine(), out updatedStock) && updatedStock >= 0)
+                {
+                    productToUpdate.Stock = productToUpdate.Stock;
+                }
+                else
+                {
+                    productToUpdate.Stock = updatedStock;
+                }
+
+                await _productService.UpdateProductAsync(productToUpdate);
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                Console.WriteLine($"An error occurred while updating the product: {ex.Message}");
             }
             finally
             {
-
+                Console.WriteLine("Product updated successfully!");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
             }
+        }
+        #endregion
+
+        #region VIEALLPRODUCTS
+        public async Task ViewAllProducts()
+        {
+            Console.Clear();
+            Console.WriteLine("View All Products");
+            var allProducts = await _productService.GetAllProductsAsync();
+            if (allProducts.Any())
+            {
+                foreach (var item in allProducts)
+                {
+                    Console.WriteLine($"ID: {item.Id}, Name: {item.Name}, Description: {item.Description}, Price: ${item.Price}, Category: {item.Category}, Stock: {item.Stock}, Creation Date: {item.CreatedDate}\n");
+                }
+            }
+
+        }
+        #endregion
+
+        #region VIEWPRODUCTBYID
+        public async Task ViewProductByID()
+        {
+            Console.Clear();
+            Console.WriteLine("View Product By ID");
+            Console.WriteLine("Inser ID of existing Product");
+            // ID validation
+            int selectedId;
+            while (true)
+            {
+                Console.Write("Enter product ID: ");
+                if (int.TryParse(Console.ReadLine(), out selectedId) && selectedId > 0)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid ID Syntax. Please enter a valid positive number.");
+                }
+            }
+            var item = await _productService.GetProductByIdAsync(selectedId);
+            if (item == null)
+            {
+                Console.WriteLine($"Product with ID{selectedId} not found.");
+                return;
+            }
+            Console.WriteLine($"ID: {item.Id}, Name: {item.Name}, Description: {item.Description}, Price: ${item.Price}, Category: {item.Category}, Stock: {item.Stock}, Creation Date: {item.CreatedDate}\n");
         }
         #endregion
     }
